@@ -82,3 +82,42 @@ models = {
                                          eval_metric='logloss',
                                          random_state=42, verbosity=0)
 }
+
+
+# ─────────────────────────────────────────────
+# 4. Trainining and Evaluating the data
+# ─────────────────────────────────────────────
+results = {}
+
+for name, model in models.items():
+    print(f"\n{'─'*50}")
+    print(f"Training: {name}")
+
+    model.fit(X_train_sc, y_train)
+    y_pred = model.predict(X_test_sc)
+    y_prob = model.predict_proba(X_test_sc)[:, 1]
+
+    acc  = accuracy_score(y_test, y_pred)
+    auc  = roc_auc_score(y_test, y_prob)
+    prec = precision_score(y_test, y_pred, zero_division=0)
+    rec  = recall_score(y_test, y_pred, zero_division=0)
+    f1   = f1_score(y_test, y_pred, zero_division=0)
+    mcc  = matthews_corrcoef(y_test, y_pred)
+
+    results[name] = {
+        "Accuracy":  round(acc,  4),
+        "AUC":       round(auc,  4),
+        "Precision": round(prec, 4),
+        "Recall":    round(rec,  4),
+        "F1 Score":  round(f1,   4),
+        "MCC":       round(mcc,  4)
+    }
+
+    print(f"  Accuracy  : {acc:.4f}")
+    print(f"  AUC       : {auc:.4f}")
+    print(f"  Precision : {prec:.4f}")
+    print(f"  Recall    : {rec:.4f}")
+    print(f"  F1 Score  : {f1:.4f}")
+    print(f"  MCC       : {mcc:.4f}")
+    print(f"\n  Confusion Matrix:\n{confusion_matrix(y_test, y_pred)}")
+    print(f"\n  Classification Report:\n{classification_report(y_test, y_pred)}")
