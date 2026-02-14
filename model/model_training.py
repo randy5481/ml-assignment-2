@@ -66,3 +66,19 @@ X_train_sc = scaler.fit_transform(X_train)
 X_test_sc  = scaler.transform(X_test)
 
 print(f"\nTrain size: {X_train.shape[0]} | Test size: {X_test.shape[0]}")
+
+
+
+# ─────────────────────────────────────────────
+# 3. Defining Models
+# ─────────────────────────────────────────────
+models = {
+    "Logistic Regression": LogisticRegression(max_iter=1000, random_state=42),
+    "Decision Tree":       DecisionTreeClassifier(random_state=42),
+    "K-Nearest Neighbor":  KNeighborsClassifier(n_neighbors=5),
+    "Naive Bayes":         GaussianNB(),
+    "Random Forest":       RandomForestClassifier(n_estimators=100, random_state=42),
+    "XGBoost":             XGBClassifier(use_label_encoder=False,
+                                         eval_metric='logloss',
+                                         random_state=42, verbosity=0)
+}
