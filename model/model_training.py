@@ -121,3 +121,19 @@ for name, model in models.items():
     print(f"  MCC       : {mcc:.4f}")
     print(f"\n  Confusion Matrix:\n{confusion_matrix(y_test, y_pred)}")
     print(f"\n  Classification Report:\n{classification_report(y_test, y_pred)}")
+
+
+# ─────────────────────────────────────────────
+# 5. Summary Table
+# ─────────────────────────────────────────────
+print("\n" + "=" * 80)
+print("SUMMARY – Evaluation Metrics for All Models")
+print("=" * 80)
+results_df = pd.DataFrame(results).T
+print(results_df.to_string())
+print("=" * 80)
+print("\nBest Model by Accuracy :", results_df['Accuracy'].idxmax())
+print("Best Model by F1 Score  :", results_df['F1 Score'].idxmax())
+print("Best Model by AUC       :", results_df['AUC'].idxmax())
+print("Best Model by MCC       :", results_df['MCC'].idxmax())
+print("\nDone!")
