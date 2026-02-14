@@ -53,3 +53,43 @@ if uploaded_file is None:
     st.write("Target column should be the last column (HeartDisease)")
     st.stop()
 
+
+
+# load data
+df = pd.read_csv(uploaded_file)
+
+st.subheader("Dataset Overview")
+col1, col2, col3 = st.columns(3)
+col1.metric("Total Rows", df.shape[0])
+col2.metric("Total Columns", df.shape[1])
+col3.metric("Missing Values", df.isnull().sum().sum())
+
+st.dataframe(df.head())
+
+# let user pick target column
+target = st.selectbox("Select Target Column", df.columns, index=len(df.columns)-1)
+
+
+def preprocess(df, target_col, ts):
+    data = df.dropna().copy()
+    
+    le = LabelEncoder()
+    for col in data.select_dtypes(include='object').columns:
+        data[col] = le.fit_transform(data[col])
+
+    X = data.drop(columns=[target_col])
+    y = data[target_col]
+
+    # encode target if needed
+    if y.dtype == 'object':
+        y = le.fit_transform(y)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=ts, random_state=rand_state, stratify=y
+    )
+
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
+
+    return X_train, X_test, y_train, y_test, list(X.columns)
